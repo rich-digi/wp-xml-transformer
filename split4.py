@@ -10,7 +10,7 @@ formatter = xmlformatter.Formatter(indent="1", indent_char="\t", encoding_output
 
 # Register namespaces
 namespaces = {
-	'excerp': 'http://wordpress.org/export/1.2/excerpt/',
+	'excerpt': 'http://wordpress.org/export/1.2/excerpt/',
 	'content': 'http://purl.org/rss/1.0/modules/content/',
 	'wf': 'http://wellformedweb.org/CommentAPI/',
 	'dc': 'http://purl.org/dc/elements/1.1/',
