@@ -37,6 +37,11 @@ def write_utf8_file(fp, ustr):
 	f.close()
 
 
+make_dir('/output/WP-META/authors')
+make_dir('/output/WP-META/categories')
+make_dir('/output/WP-META/terms')
+
+
 # Parse the XML using ElementTree's streaming SAX-like parser, looking for 'items'
 for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
 
@@ -71,8 +76,6 @@ tree = ET.parse(xmldata)
 
 # Get general blog info
 
-make_dir('/output/WP-META')
-
 title = tree.xpath('//channel/title')[0].text
 print title
 
@@ -102,10 +105,6 @@ print generator
 
 
 # Get authors, categories and terms
-
-make_dir('/output/WP-META/authors')
-make_dir('/output/WP-META/categories')
-make_dir('/output/WP-META/terms')
 
 
 authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
