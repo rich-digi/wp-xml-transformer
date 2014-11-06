@@ -10,7 +10,7 @@ from lxml import etree as ET
 #xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
 xmldata = 'input/wp.xml'
 
-# Register Wordpress XML namespaces
+# Wordpress XML namespaces
 namespaces = {
 	'wp'		: 'http://wordpress.org/export/1.2/',
 	'excerpt'	: 'http://wordpress.org/export/1.2/excerpt/',
@@ -37,39 +37,9 @@ def write_utf8_file(fp, ustr):
 	f.close()
 
 
-make_dir('/output/WP-META/authors')
-make_dir('/output/WP-META/categories')
-make_dir('/output/WP-META/terms')
-
-
-# Parse the XML using ElementTree's streaming SAX-like parser, looking for 'items'
-for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
-
-	title 	= elem.find('title').text
-	type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
-	name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
-
-	print '{:15s} {:100s} {:100s}'.format(type, title, name)
-	
-	content = elem.find('content:encoded', 	namespaces=namespaces)
-	excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
-	elem.remove(content)
-	elem.remove(excerpt)
-	
-	if title is not None:
-	
-		dir_suffix = name
-		if dir_suffix is None:
-			dir_suffix = re.sub(r'[^\w]', '_', title.lower())
-		dir = '/output/'+type+'__'+dir_suffix
-		make_dir(dir)
-
-		xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
-		write_utf8_file(dir+'/meta.xml', xmlstr)
-		write_utf8_file(dir+'/content.html', content.text)
-		write_utf8_file(dir+'/excerpt.html', excerpt.text)
-
-
+make_dir('/output/_WP-META/authors')
+make_dir('/output/_WP-META/categories')
+make_dir('/output/_WP-META/terms')
 
 
 tree = ET.parse(xmldata)
@@ -106,24 +76,55 @@ print generator
 
 # Get authors, categories and terms
 
-
 authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
 for author in authors:
 	author_login = author.find('wp:author_login', namespaces=namespaces).text 
 	print author_login
 	xmlstr = ET.tostring(author, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/WP-META/authors/'+author_login+'.xml', xmlstr)
+	write_utf8_file('/output/_WP-META/authors/'+author_login+'.xml', xmlstr)
 
 cats = tree.xpath('//channel/wp:category', namespaces=namespaces)
 for cat in cats:
 	nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
 	print nicename
 	xmlstr = ET.tostring(cat, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/WP-META/categories/'+nicename+'.xml', xmlstr)
+	write_utf8_file('/output/_WP-META/categories/'+nicename+'.xml', xmlstr)
 
 terms = tree.xpath('//channel/wp:term', namespaces=namespaces)
 for term in terms:
 	term_taxonomy = term.find('wp:term_taxonomy', namespaces=namespaces).text 
 	print term_taxonomy
 	xmlstr = ET.tostring(term, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/WP-META/terms/'+term_taxonomy+'.xml', xmlstr)
+	write_utf8_file('/output/_WP-META/terms/'+term_taxonomy+'.xml', xmlstr)
+	
+	
+# Parse the XML using ELXML's ElementTree-compatible streaming SAX-like parser, looking for 'items'
+for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
+
+	title 	= elem.find('title').text
+	type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
+	name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
+
+	print '{:15s} {:100s} {:100s}'.format(type, title, name)
+	
+	content = elem.find('content:encoded', 	namespaces=namespaces)
+	excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
+	elem.remove(content)
+	elem.remove(excerpt)
+	
+	if title is not None:
+	
+		dir_suffix = name
+		if dir_suffix is None:
+			dir_suffix = re.sub(r'[^\w]', '_', title.lower())
+		dir = '/output/'+type+'__'+dir_suffix
+		make_dir(dir)
+
+		xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
+		write_utf8_file(dir+'/meta.xml', xmlstr)
+		write_utf8_file(dir+'/content.html', content.text)
+		write_utf8_file(dir+'/excerpt.html', excerpt.text)
+
+
+# Comments
+
