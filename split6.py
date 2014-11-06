@@ -33,35 +33,28 @@ def write_utf8_file(fp, ustr):
 
 
 # Parse the XML using ElementTree's streaming SAX-like parser
-for event, elem in ET.iterparse(xmldata, strip_cdata=False, remove_blank_text=True):
+for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
 
-	# Process on 'end' event (not 'start', as using start the element MAY not have fully loaded)
-	if event == 'end':
-		
-		# Remove XML namespace prefix	
-		tag = ET.QName(elem.tag).localname
-		
-		if tag == 'item':
-			title 	= elem.find('title').text
-			type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
-			name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
+	title 	= elem.find('title').text
+	type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
+	name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
 
-			print '{:15s} {:100s} {:100s}'.format(type, title, name)
-			
-			content = elem.find('content:encoded', 	namespaces=namespaces)
-			excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
-			elem.remove(content)
-			elem.remove(excerpt)
-			
-			if title is not None:
-			
-				dir_suffix = name
-				if dir_suffix is None:
-					dir_suffix = re.sub(r'[^\w]', '_', title.lower())
-				dir = os.getcwd()+'/output/'+type+'__'+dir_suffix
-				if not os.path.exists(dir): os.makedirs(dir)
+	print '{:15s} {:100s} {:100s}'.format(type, title, name)
+	
+	content = elem.find('content:encoded', 	namespaces=namespaces)
+	excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
+	elem.remove(content)
+	elem.remove(excerpt)
+	
+	if title is not None:
+	
+		dir_suffix = name
+		if dir_suffix is None:
+			dir_suffix = re.sub(r'[^\w]', '_', title.lower())
+		dir = os.getcwd()+'/output/'+type+'__'+dir_suffix
+		if not os.path.exists(dir): os.makedirs(dir)
 
-				xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
-				write_utf8_file(dir+'/meta.xml', xmlstr)
-				write_utf8_file(dir+'/content.html', content.text)
-				write_utf8_file(dir+'/excerpt.html', excerpt.text)
+		xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
+		write_utf8_file(dir+'/meta.xml', xmlstr)
+		write_utf8_file(dir+'/content.html', content.text)
+		write_utf8_file(dir+'/excerpt.html', excerpt.text)
