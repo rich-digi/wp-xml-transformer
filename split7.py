@@ -6,6 +6,7 @@ import sys, os, re, codecs
 sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 from lxml import etree as ET
+from phpserialize import serialize, unserialize
 
 #xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
 xmldata = 'input/wp.xml'
