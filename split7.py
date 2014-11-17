@@ -46,6 +46,7 @@ def write_utf8_file(fp, ustr):
 
 
 def logprint(ustr=''):
+	# Unicode-safe logger
 	print ustr
 	lfp.write(ustr+'\n')
 
@@ -175,8 +176,8 @@ def run():
 	make_export_dirs()
 	parse_xml_and_split(xmldata)
 	
-	# Commit to Git
-	logprint(subprocess.check_output(['cd', 'LOCAL-REPO/bizclub-content'], 			stderr=subprocess.STDOUT))
+	# Commit to Git, and push to the central repo
+	logprint(subprocess.check_output(['cd', 'LOCAL-REPO/bizclub-content'], 		stderr=subprocess.STDOUT))
 	logprint(subprocess.check_output(['git', 'add', '-A'], 						stderr=subprocess.STDOUT))
 	logprint(subprocess.check_output(['git', 'commit', '-m', commit_message], 	stderr=subprocess.STDOUT))
 	logprint(subprocess.check_output(['git', 'push'], 							stderr=subprocess.STDOUT))
