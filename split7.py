@@ -52,12 +52,10 @@ def logprint(ustr=''):
 
 
 def shexec(cmd):
-	cmd_and_args_list = shlex.split(cmd)
-	print cmd_and_args_list
 	try:
 		logprint(subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True))
 	except:
-		logprint('No output')
+		logprint('ERROR: Shell commapnd error, running ' + cmd)
 
 
 # ------------------------------------------------------------------------------------------------
