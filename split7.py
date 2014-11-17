@@ -59,9 +59,11 @@ def logprint(ustr=''):
 
 def shexec(cmd):
 	try:
-		logprint(subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True))
+		res = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
 	except:
-		logprint('ERROR: Shell commapnd error, running ' + cmd)
+		res = 'ERROR: Shell command error, running ' + cmd
+	logprint(res)
+	return res
 
 
 # ------------------------------------------------------------------------------------------------
