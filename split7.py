@@ -54,7 +54,10 @@ def logprint(ustr=''):
 def shexec(cmd):
 	cmd_and_args_list = shlex.split(cmd)
 	print cmd_and_args_list
-	logprint(subprocess.check_output(cmd_and_args_list, stderr=subprocess.STDOUT))
+	try:
+		logprint(subprocess.check_output(cmd_and_args_list, stderr=subprocess.STDOUT))
+	except:
+		logprint('No output')
 
 
 # ------------------------------------------------------------------------------------------------
@@ -183,7 +186,8 @@ def run():
 	parse_xml_and_split(xmldata)
 	
 	logprint('Copying into local repo')
-	# shexec('cp -pr output/* LOCAL-REPO/bizclub-content')
+	shexec('pwd')
+	shexec('cp -pr output/* LOCAL-REPO/bizclub-content')
 
 	# Commit to Git, and push to the central repo
 	shexec('cd LOCAL-REPO/bizclub-content')
