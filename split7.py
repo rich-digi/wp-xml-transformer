@@ -2,7 +2,7 @@
 # Split Wordpress XML (using LXML)
 # ------------------------------------------------------------------------------------------------
 
-import sys, os, re, codecs, datetime, subprocess
+import sys, os, re, codecs, datetime, subprocess, distutils
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 from lxml import etree as ET
@@ -12,8 +12,8 @@ from phpserialize import serialize, unserialize
 
 
 
-#xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
-xmldata = 'input/ginger.xml'
+xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
+#xmldata = 'input/ginger.xml'
 
 # Wordpress XML namespaces
 namespaces = {
@@ -31,6 +31,9 @@ for prefix, uri in namespaces.iteritems():
 """
 
 
+# ------------------------------------------------------------------------------------------------
+# Utility functions
+
 def make_dir(dir):
 	dir = os.getcwd() + dir
 	if not os.path.exists(dir): os.makedirs(dir)
@@ -42,10 +45,12 @@ def write_utf8_file(fp, ustr):
 	f.close()
 
 
-def logprint(str=''):
-	print str
-	lfp.write(str+'\n')
+def logprint(ustr=''):
+	print ustr
+	lfp.write(ustr+'\n')
 
+
+# ------------------------------------------------------------------------------------------------
 
 def make_export_dirs():
 	make_dir('/output/_WP-META/authors')
@@ -53,7 +58,8 @@ def make_export_dirs():
 	make_dir('/output/_WP-META/terms')
 
 
-def parse_xmland_split():
+
+def parse_xml_and_split(xmldata):
 	
 	tree = ET.parse(xmldata)
 
@@ -61,31 +67,31 @@ def parse_xmland_split():
 	# Get general blog info
 
 	title = tree.xpath('//channel/title')[0].text
-	print title
+	logprint(title)
 
 	link = tree.xpath('//channel/link')[0].text
-	print link
+	logprint(link)
 
 	description = tree.xpath('//channel/description')[0].text
-	print description
+	logprint(description)
 
 	pubDate = tree.xpath('//channel/pubDate')[0].text
-	print pubDate
+	logprint(pubDate)
 
 	language = tree.xpath('//channel/language')[0].text
-	print language
+	logprint(language)
 
 	wxr_version = tree.xpath('//channel/wp:wxr_version', namespaces=namespaces)[0].text
-	print wxr_version
+	logprint(wxr_version)
 
 	base_site_url = tree.xpath('//channel/wp:base_site_url', namespaces=namespaces)[0].text
-	print base_site_url
+	logprint(base_site_url)
 
 	base_blog_url = tree.xpath('//channel/wp:base_blog_url', namespaces=namespaces)[0].text
-	print base_blog_url
+	logprint(base_blog_url)
 
 	generator = tree.xpath('//channel/generator')[0].text
-	print generator
+	logprint(generator)
 
 
 	# ------------------------------------------------------------------------------------------------
@@ -94,21 +100,21 @@ def parse_xmland_split():
 	authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
 	for author in authors:
 		author_login = author.find('wp:author_login', namespaces=namespaces).text 
-		print author_login
+		logprint(author_login)
 		xmlstr = ET.tostring(author, pretty_print=True, encoding='unicode', method='xml')
 		write_utf8_file('/output/_WP-META/authors/'+author_login+'.xml', xmlstr)
 
 	cats = tree.xpath('//channel/wp:category', namespaces=namespaces)
 	for cat in cats:
 		nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
-		print nicename
+		logprint(nicename)
 		xmlstr = ET.tostring(cat, pretty_print=True, encoding='unicode', method='xml')
 		write_utf8_file('/output/_WP-META/categories/'+nicename+'.xml', xmlstr)
 
 	terms = tree.xpath('//channel/wp:term', namespaces=namespaces)
 	for term in terms:
 		term_taxonomy = term.find('wp:term_taxonomy', namespaces=namespaces).text 
-		print term_taxonomy
+		logprint(term_taxonomy)
 		xmlstr = ET.tostring(term, pretty_print=True, encoding='unicode', method='xml')
 		write_utf8_file('/output/_WP-META/terms/'+term_taxonomy+'.xml', xmlstr)
 	
@@ -122,7 +128,7 @@ def parse_xmland_split():
 		type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
 		name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
 
-		print '{:15s} {:100s} {:100s}'.format(type, title, name)
+		logprint(u'{:15s} {:100s} {:100s}'.format(type, title, name))
 	
 		content = elem.find('content:encoded', 	namespaces=namespaces)
 		excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
@@ -165,9 +171,12 @@ def run():
 		return
 		
 	logprint(commit_message)
+	logprint()
+	make_export_dirs()
+	parse_xml_and_split(xmldata)
 	
 	# Commit to Git
-	logprint(subprocess.check_output(['cd', 'LOCAL-REPO/testbranch'], 			stderr=subprocess.STDOUT))
+	logprint(subprocess.check_output(['cd', 'LOCAL-REPO/bizclub-content'], 			stderr=subprocess.STDOUT))
 	logprint(subprocess.check_output(['git', 'add', '-A'], 						stderr=subprocess.STDOUT))
 	logprint(subprocess.check_output(['git', 'commit', '-m', commit_message], 	stderr=subprocess.STDOUT))
 	logprint(subprocess.check_output(['git', 'push'], 							stderr=subprocess.STDOUT))
@@ -176,11 +185,12 @@ def run():
 
 if __name__ == '__main__':
 	today = datetime.datetime.today()
-	logfile = 'log/ctr-export-' + today.strftime('%Y-%m-%d-%H-%M-%S') + '.log'
-	lfp = open(logfile, 'w')
+	logtime = today.strftime('%Y-%m-%d-%H-%M-%S')
+	logfile = 'log/ctr-export-' + logtime + '.log'
+	lfp = codecs.open(logfile, 'w', 'utf-8')
 	logprint()	
 	logprint('------------------------------------------------------')
-	logprint('SPLIT & COMMIT')
+	logprint('SPLIT & COMMIT: running at ' + logtime)
 	logprint('------------------------------------------------------')
 	logprint()	
 	run();
