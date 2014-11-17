@@ -8,9 +8,15 @@ import sys, os, re, codecs, datetime, subprocess, shlex
 from lxml import etree as ET
 from phpserialize import serialize, unserialize
 
+class trml:
+	BLACK 	= '\033[30m'
+	RED 	= '\033[31m'
+	GREEN 	= '\033[32m'
+	BOLD	= '\033[1m'
+	NORMAL	= '\033[0;0m'
 
-
-
+class config:
+	REPO 	= '../bizclub-content'
 
 xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
 #xmldata = 'input/ginger.xml'
@@ -59,6 +65,7 @@ def shexec(cmd):
 
 
 # ------------------------------------------------------------------------------------------------
+# Export routine
 
 def make_export_dirs():
 	make_dir('/output/_WP-META/authors')
@@ -184,8 +191,7 @@ def run():
 	parse_xml_and_split(xmldata)
 	
 	logprint('Copying into local repo')
-	shexec('pwd')
-	shexec('cp -r output/* LOCAL-REPO/bizclub-content')
+	shexec('cp -r output/* ' + config.REPO)
 
 	# Commit to Git, and push to the central repo
 	shexec('cd LOCAL-REPO/bizclub-content')
@@ -194,7 +200,6 @@ def run():
 	shexec('git push')
 		
 	
-
 if __name__ == '__main__':
 	today = datetime.datetime.today()
 	logtime = today.strftime('%Y-%m-%d-%H-%M-%S')
