@@ -2,7 +2,7 @@
 # Split Wordpress XML (using LXML)
 # ------------------------------------------------------------------------------------------------
 
-import sys, os, re, codecs, datetime, subprocess, distutils
+import sys, os, re, codecs, datetime, subprocess, shlex
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 from lxml import etree as ET
@@ -49,6 +49,12 @@ def logprint(ustr=''):
 	# Unicode-safe logger
 	print ustr
 	lfp.write(ustr+'\n')
+
+
+def shexec(cmd):
+	cmd_and_args_list = shlex.split(cmd)
+	print cmd_and_args_list
+	logprint(subprocess.check_output(cmd_and_args_list, stderr=subprocess.STDOUT))
 
 
 # ------------------------------------------------------------------------------------------------
@@ -176,11 +182,14 @@ def run():
 	make_export_dirs()
 	parse_xml_and_split(xmldata)
 	
+	logprint('Copying into local repo')
+	# shexec('cp -pr output/* LOCAL-REPO/bizclub-content')
+
 	# Commit to Git, and push to the central repo
-	logprint(subprocess.check_output(['cd', 'LOCAL-REPO/bizclub-content'], 		stderr=subprocess.STDOUT))
-	logprint(subprocess.check_output(['git', 'add', '-A'], 						stderr=subprocess.STDOUT))
-	logprint(subprocess.check_output(['git', 'commit', '-m', commit_message], 	stderr=subprocess.STDOUT))
-	logprint(subprocess.check_output(['git', 'push'], 							stderr=subprocess.STDOUT))
+	shexec('cd LOCAL-REPO/bizclub-content')
+	shexec('git add -A')
+	shexec('git commit -m "' + commit_message + '"')
+	shexec('git push')
 		
 	
 
