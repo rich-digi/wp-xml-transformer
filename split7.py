@@ -187,7 +187,7 @@ def run():
 	
 	logprint('Copying into local repo')
 	shexec('pwd')
-	shexec('cp -pr output/* LOCAL-REPO/bizclub-content')
+	shexec('cp -r output/* LOCAL-REPO/bizclub-content')
 
 	# Commit to Git, and push to the central repo
 	shexec('cd LOCAL-REPO/bizclub-content')
