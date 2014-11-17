@@ -183,14 +183,14 @@ def run():
 	if len(sys.argv) > 1:
 		commit_message = sys.argv[1]
 	else:
-		logprint('ERROR: Please summpy a commit message')
+		logprint('ERROR: Please supply a commit message')
 		return
 		
 	make_export_dirs()
 	parse_xml_and_split(xmldata)
 	
 	logprint('Copying into local repo')
-	shexec('cp -r output/* ' + config.REPO)
+	shexec('cp -pr output/* ' + config.REPO)
 
 	# Commit to Git, and push to the central repo
 	os.chdir(config.REPO)
