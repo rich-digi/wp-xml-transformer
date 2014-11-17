@@ -167,10 +167,10 @@ def run():
 	logprint(commit_message)
 	
 	# Commit to Git
-	logwrite(subprocess.check_output(['cd', 'LOCAL-REPO/testbranch'], stderr=subprocess.STDOUT))
-	logwrite(subprocess.check_output(['git', 'add', '-a'], stderr=subprocess.STDOUT))
-	logwrite(subprocess.check_output(['git', 'commit', commit_message], stderr=subprocess.STDOUT))
-	logwrite(subprocess.check_output(['git', 'push'], stderr=subprocess.STDOUT))
+	logprint(subprocess.check_output(['cd', 'LOCAL-REPO/testbranch'], 			stderr=subprocess.STDOUT))
+	logprint(subprocess.check_output(['git', 'add', '-A'], 						stderr=subprocess.STDOUT))
+	logprint(subprocess.check_output(['git', 'commit', '-m', commit_message], 	stderr=subprocess.STDOUT))
+	logprint(subprocess.check_output(['git', 'push'], 							stderr=subprocess.STDOUT))
 		
 	
 
