@@ -75,12 +75,11 @@ def make_export_dirs():
 	make_dir('/output/_WP-META/terms')
 
 
-
 def parse_xml_and_split(xmldata):
 	
 	tree = ET.parse(xmldata)
 
-	# ------------------------------------------------------------------------------------------------
+	# ---------------------
 	# Get general blog info
 
 	title = tree.xpath('//channel/title')[0].text
@@ -111,7 +110,7 @@ def parse_xml_and_split(xmldata):
 	logprint(generator)
 
 
-	# ------------------------------------------------------------------------------------------------
+	# ---------------------------------
 	# Get authors, categories and terms
 
 	authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
@@ -171,7 +170,7 @@ def parse_xml_and_split(xmldata):
 
 
 
-	# ------------------------------------------------------------------------------------------------
+	# ---------------
 	# Comments - TODO
 
 
