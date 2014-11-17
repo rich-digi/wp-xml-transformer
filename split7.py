@@ -1,12 +1,16 @@
-# --------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------
 # Split Wordpress XML (using LXML)
-# --------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------
 
-import sys, os, re, codecs
+import sys, os, re, codecs, datetime, subprocess
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 from lxml import etree as ET
 from phpserialize import serialize, unserialize
+
+
+
+
 
 #xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
 xmldata = 'input/ginger.xml'
@@ -38,94 +42,147 @@ def write_utf8_file(fp, ustr):
 	f.close()
 
 
-make_dir('/output/_WP-META/authors')
-make_dir('/output/_WP-META/categories')
-make_dir('/output/_WP-META/terms')
+def logprint(str=''):
+	print str
+	lfp.write(str+'\n')
 
 
-tree = ET.parse(xmldata)
-
-# Get general blog info
-
-title = tree.xpath('//channel/title')[0].text
-print title
-
-link = tree.xpath('//channel/link')[0].text
-print link
-
-description = tree.xpath('//channel/description')[0].text
-print description
-
-pubDate = tree.xpath('//channel/pubDate')[0].text
-print pubDate
-
-language = tree.xpath('//channel/language')[0].text
-print language
-
-wxr_version = tree.xpath('//channel/wp:wxr_version', namespaces=namespaces)[0].text
-print wxr_version
-
-base_site_url = tree.xpath('//channel/wp:base_site_url', namespaces=namespaces)[0].text
-print base_site_url
-
-base_blog_url = tree.xpath('//channel/wp:base_blog_url', namespaces=namespaces)[0].text
-print base_blog_url
-
-generator = tree.xpath('//channel/generator')[0].text
-print generator
+def make_export_dirs():
+	make_dir('/output/_WP-META/authors')
+	make_dir('/output/_WP-META/categories')
+	make_dir('/output/_WP-META/terms')
 
 
-# Get authors, categories and terms
+def parse_xmland_split():
+	
+	tree = ET.parse(xmldata)
 
-authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
-for author in authors:
-	author_login = author.find('wp:author_login', namespaces=namespaces).text 
-	print author_login
-	xmlstr = ET.tostring(author, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/_WP-META/authors/'+author_login+'.xml', xmlstr)
+	# ------------------------------------------------------------------------------------------------
+	# Get general blog info
 
-cats = tree.xpath('//channel/wp:category', namespaces=namespaces)
-for cat in cats:
-	nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
-	print nicename
-	xmlstr = ET.tostring(cat, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/_WP-META/categories/'+nicename+'.xml', xmlstr)
+	title = tree.xpath('//channel/title')[0].text
+	print title
 
-terms = tree.xpath('//channel/wp:term', namespaces=namespaces)
-for term in terms:
-	term_taxonomy = term.find('wp:term_taxonomy', namespaces=namespaces).text 
-	print term_taxonomy
-	xmlstr = ET.tostring(term, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/_WP-META/terms/'+term_taxonomy+'.xml', xmlstr)
+	link = tree.xpath('//channel/link')[0].text
+	print link
+
+	description = tree.xpath('//channel/description')[0].text
+	print description
+
+	pubDate = tree.xpath('//channel/pubDate')[0].text
+	print pubDate
+
+	language = tree.xpath('//channel/language')[0].text
+	print language
+
+	wxr_version = tree.xpath('//channel/wp:wxr_version', namespaces=namespaces)[0].text
+	print wxr_version
+
+	base_site_url = tree.xpath('//channel/wp:base_site_url', namespaces=namespaces)[0].text
+	print base_site_url
+
+	base_blog_url = tree.xpath('//channel/wp:base_blog_url', namespaces=namespaces)[0].text
+	print base_blog_url
+
+	generator = tree.xpath('//channel/generator')[0].text
+	print generator
+
+
+	# ------------------------------------------------------------------------------------------------
+	# Get authors, categories and terms
+
+	authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
+	for author in authors:
+		author_login = author.find('wp:author_login', namespaces=namespaces).text 
+		print author_login
+		xmlstr = ET.tostring(author, pretty_print=True, encoding='unicode', method='xml')
+		write_utf8_file('/output/_WP-META/authors/'+author_login+'.xml', xmlstr)
+
+	cats = tree.xpath('//channel/wp:category', namespaces=namespaces)
+	for cat in cats:
+		nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
+		print nicename
+		xmlstr = ET.tostring(cat, pretty_print=True, encoding='unicode', method='xml')
+		write_utf8_file('/output/_WP-META/categories/'+nicename+'.xml', xmlstr)
+
+	terms = tree.xpath('//channel/wp:term', namespaces=namespaces)
+	for term in terms:
+		term_taxonomy = term.find('wp:term_taxonomy', namespaces=namespaces).text 
+		print term_taxonomy
+		xmlstr = ET.tostring(term, pretty_print=True, encoding='unicode', method='xml')
+		write_utf8_file('/output/_WP-META/terms/'+term_taxonomy+'.xml', xmlstr)
 	
 	
-# Parse the XML using ELXML's ElementTree-compatible streaming SAX-like parser, looking for 'items'
-for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
+	# ------------------------------------------------------------------------------------------------
+	# Parse the XML using LXML's ElementTree-compatible streaming SAX-like parser, looking for 'items'
 
-	title 	= elem.find('title').text
-	type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
-	name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
+	for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
 
-	print '{:15s} {:100s} {:100s}'.format(type, title, name)
+		title 	= elem.find('title').text
+		type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
+		name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
+
+		print '{:15s} {:100s} {:100s}'.format(type, title, name)
 	
-	content = elem.find('content:encoded', 	namespaces=namespaces)
-	excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
-	elem.remove(content)
-	elem.remove(excerpt)
+		content = elem.find('content:encoded', 	namespaces=namespaces)
+		excerpt = elem.find('excerpt:encoded', 	namespaces=namespaces)
+		elem.remove(content)
+		elem.remove(excerpt)
 	
-	if title is not None:
+		if title is not None:
 	
-		dir_suffix = name
-		if dir_suffix is None:
-			dir_suffix = re.sub(r'[^\w]', '_', title.lower())
-		dir = '/output/'+type+'__'+dir_suffix
-		make_dir(dir)
+			dir_suffix = name
+			if dir_suffix is None:
+				dir_suffix = re.sub(r'[^\w]', '_', title.lower())
+			dir = '/output/'+type+'__'+dir_suffix
+			make_dir(dir)
 
-		xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
-		write_utf8_file(dir+'/meta.xml', xmlstr)
-		write_utf8_file(dir+'/content.html', content.text)
-		write_utf8_file(dir+'/excerpt.html', excerpt.text)
+			xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
+			write_utf8_file(dir+'/meta.xml', xmlstr)
+			write_utf8_file(dir+'/content.html', content.text)
+			write_utf8_file(dir+'/excerpt.html', excerpt.text)
 
 
-# Comments
+	# Now find and save the locally-linked images (except service graphics)
 
+
+
+
+	# ------------------------------------------------------------------------------------------------
+	# Comments - TODO
+
+
+
+
+# --------------------------------------------------------------------------------
+# RUN
+
+def run():
+	if len(sys.argv) > 1:
+		commit_message = sys.argv[1]
+	else:
+		logprint('ERROR: Please summpy a commit message')
+		return
+		
+	logprint(commit_message)
+	
+	# Commit to Git
+	logwrite(subprocess.check_output(['cd', 'LOCAL-REPO/testbranch'], stderr=subprocess.STDOUT))
+	logwrite(subprocess.check_output(['git', 'add', '-a'], stderr=subprocess.STDOUT))
+	logwrite(subprocess.check_output(['git', 'commit', commit_message], stderr=subprocess.STDOUT))
+	logwrite(subprocess.check_output(['git', 'push'], stderr=subprocess.STDOUT))
+		
+	
+
+if __name__ == '__main__':
+	today = datetime.datetime.today()
+	logfile = 'log/ctr-export-' + today.strftime('%Y-%m-%d-%H-%M-%S') + '.log'
+	lfp = open(logfile, 'w')
+	logprint()	
+	logprint('------------------------------------------------------')
+	logprint('SPLIT & COMMIT')
+	logprint('------------------------------------------------------')
+	logprint()	
+	run();
+	logprint()
+	lfp.close()
