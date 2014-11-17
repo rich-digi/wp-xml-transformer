@@ -185,8 +185,6 @@ def run():
 		logprint('ERROR: Please summpy a commit message')
 		return
 		
-	logprint(commit_message)
-	logprint()
 	make_export_dirs()
 	parse_xml_and_split(xmldata)
 	
