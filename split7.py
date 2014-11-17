@@ -195,6 +195,7 @@ def run():
 
 	# Commit to Git, and push to the central repo
 	shexec('cd ' + config.REPO)
+	shexec('pwd')
 	shexec('git add -A')
 	shexec('git commit -m "' + commit_message + '"')
 	shexec('git push')
