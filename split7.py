@@ -16,10 +16,9 @@ class trml:
 	NORMAL	= '\033[0;0m'
 
 class config:
-	REPO 	= '../bizclub-content'
-
-xmldata = 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
-#xmldata = 'input/ginger.xml'
+	LOGDIR		= 'log/EXPORT/'
+	REPODIR		= '../bizclub-content'
+	XMLEXPORT	= 'input/dmclubcustomerblog.wordpress.2014-10-29.xml'
 
 # Wordpress XML namespaces
 namespaces = {
@@ -180,6 +179,12 @@ def parse_xml_and_split(xmldata):
 # RUN
 
 def run():
+	logprint()	
+	logprint('------------------------------------------------------')
+	logprint('SPLIT & COMMIT: running at ' + logtime)
+	logprint('------------------------------------------------------')
+	logprint()	
+
 	if len(sys.argv) > 1:
 		commit_message = sys.argv[1]
 	else:
@@ -187,29 +192,38 @@ def run():
 		return
 		
 	make_export_dirs()
+	
+	xmldata = config.XMLEXPORT if len(sys.argv) < 3 else sys.argv[2]
 	parse_xml_and_split(xmldata)
 	
 	logprint('Copying into local repo')
-	shexec('cp -r output/* ' + config.REPO)
+	shexec('cp -r output/* ' + config.REPODIR)
 
 	# Commit to Git, and push to the central repo
-	os.chdir(config.REPO)
+	os.chdir(config.REPODIR)
 	shexec('pwd')
 	shexec('git add -A')
-	shexec('git commit -m "' + commit_message + '"')
-	shexec('git push')
+	res = shexec('git status')
+	if 'nothing to commit' not in res:
+		shexec('git commit -m "' + commit_message + '"')
+		shexec('git push')
 		
+	logprint()
 	
+
+# --------------------------------------------------------------------------------
+
+
 if __name__ == '__main__':
-	today = datetime.datetime.today()
+	
+	# Create logfile as global
+	today 	= datetime.datetime.today()
 	logtime = today.strftime('%Y-%m-%d-%H-%M-%S')
 	logfile = 'log/ctr-export-' + logtime + '.log'
-	lfp = codecs.open(logfile, 'w', 'utf-8')
-	logprint()	
-	logprint('------------------------------------------------------')
-	logprint('SPLIT & COMMIT: running at ' + logtime)
-	logprint('------------------------------------------------------')
-	logprint()	
+	lfp 	= codecs.open(logfile, 'w', 'utf-8')
+	
+	# Run
 	run();
-	logprint()
+	
+	# Close logfile
 	lfp.close()
