@@ -1,0 +1,25 @@
+
+------------------------------------------------------
+cts-import.py : running at 2014-11-19-17-54-19
+------------------------------------------------------
+
+Let's join & import...
+
+{'CTS_ExportLogDir': 'logs/EXPORT/',
+ 'CTS_ExportTarget': 'EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml',
+ 'CTS_ImportLogDir': 'logs/IMPORT/',
+ 'CTS_ImportTarget': 'IMPORT/wordpress-import.xml',
+ 'DB_NewName': 'bizclub_prev_db',
+ 'DB_NewPass': 'njernjklfew98jivreknfr3ilj',
+ 'DB_NewUser': 'bizclub_prev_nahkduehiw',
+ 'GIT_ContentBranch': 'testbranch',
+ 'GIT_ContentLocal': '../bizclub-content',
+ 'GIT_ContentRemote': 'https://github.com/digitalmail/bizclub-contnet.git',
+ 'GIT_Pass': 'garbbokulant',
+ 'GIT_User': 'bcauto',
+ 'INS_Domain': 'www.prec.bizclub.net',
+ 'INS_Webroot': '/bome/sites/www.prev.bizclub.net/www'}
+
+STATUS: FAILURE: Please supply a commit message
+DONE
+

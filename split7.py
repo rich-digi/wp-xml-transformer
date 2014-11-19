@@ -197,7 +197,7 @@ def run():
 	parse_xml_and_split(xmldata)
 	
 	logprint('Copying into local repo')
-	shexec('cp -r output/* ' + config.REPODIR)
+	shexec('cp -pr output/* ' + config.REPODIR)
 
 	# Commit to Git, and push to the central repo
 	os.chdir(config.REPODIR)
