@@ -1,0 +1,83 @@
+
+------------------------------------------------------
+cts-export.py : running at 2014-11-19-20-36-05
+------------------------------------------------------
+
+Let's split & commit...
+
+{'CTS_ExportLogDir': 'logs/EXPORT/',
+ 'CTS_ExportTarget': 'EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml',
+ 'CTS_ImportLogDir': 'logs/IMPORT/',
+ 'CTS_ImportTarget': 'IMPORT/',
+ 'DB_NewName': 'bizclub_prev_db',
+ 'DB_NewPass': 'njernjklfew98jivreknfr3ilj',
+ 'DB_NewUser': 'bizclub_prev_nahkduehiw',
+ 'GIT_ContentBranch': 'testbranch',
+ 'GIT_ContentLocal': '../bizclub-content',
+ 'GIT_ContentRemote': 'https://github.com/digitalmail/bizclub-content.git',
+ 'GIT_Pass': 'garbbokulant',
+ 'GIT_User': 'bcauto',
+ 'INS_Domain': 'www.prec.bizclub.net',
+ 'INS_Webroot': '/home/sites/www.prev.bizclub.net/www'}
+
+Copying into local repo @
+cp -pr EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml ../bizclub-content
+
+git add -A
+
+git status
+On branch testbranch
+Your branch is up-to-date with 'origin/testbranch'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   .DS_Store
+
+
+git commit -m "aa"
+[testbranch f8d6771] aa
+ Committer: Richard Knight <rk@Richards-MacBook-Pro-612.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 .DS_Store
+
+git push
+warning: push.default is unset; its implicit value is changing in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the current behavior after the default changes, use:
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+When push.default is set to 'matching', git will push local branches
+to the remote branches that already exist with the same name.
+
+In Git 2.0, Git will default to the more conservative 'simple'
+behavior, which only pushes the current branch to the corresponding
+remote branch that 'git pull' uses to update the current branch.
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+To https://github.com/digitalmail/bizclub-content.git
+   4bba3cb..f8d6771  testbranch -> testbranch
+
+
+STATUS: SUCCESS
+DONE
+
