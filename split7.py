@@ -2,7 +2,7 @@
 # Split Wordpress XML (using LXML)
 # ------------------------------------------------------------------------------------------------
 
-import sys, os, re, codecs, datetime, subprocess, shlex
+import sys, os, re, codecs, datetime, subprocess
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 from lxml import etree as ET
@@ -188,7 +188,7 @@ def run():
 	if len(sys.argv) > 1:
 		commit_message = sys.argv[1]
 	else:
-		logprint('ERROR: Please summpy a commit message')
+		logprint('ERROR: Please supply a commit message')
 		return
 		
 	make_export_dirs()
