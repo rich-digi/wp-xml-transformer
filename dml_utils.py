@@ -3,49 +3,52 @@
 
 import os, re, codecs, datetime, subprocess
 
-class dml_utils(object):
+class dml_utils:
 
 	def __init__(self):
 		self.lfp = None
 		
 	
-	def make_dir(dir):
+	def make_dir(self, dir):
 		dir = os.getcwd() + dir
 		if not os.path.exists(dir): os.makedirs(dir)
 
 
-	def write_utf8_file(fp, ustr):
+	def write_utf8_file(self, fp, ustr):
 		f = codecs.open(os.getcwd()+fp, 'w', 'utf-8');
 		f.write(ustr)
 		f.close()
 
 
-	def create_logfile(prefix):
+	def create_logfile(self, prefix):
 		today 	= datetime.datetime.today()
-		logtime = today.strftime('%Y-%m-%d-%H-%M-%S')
-		logfile = prefix + logtime + '.log'
-		lfp 	= codecs.open(logfile, 'w', 'utf-8')
-		return lfp
+		self.logtime = today.strftime('%Y-%m-%d-%H-%M-%S')
+		logfile = prefix + self.logtime + '.log'
+		self.lfp = codecs.open(logfile, 'w', 'utf-8')
 	
 
-	def logprint(ustr=''):
+	def logprint(self, ustr=''):
 		# Unicode-safe logger
 		print ustr
-		lfp.write(ustr+'\n')
+		self.lfp.write(ustr+'\n')
 
 
-	def shexec(cmd):
+	def close_logfile(self):
+		self.lfp.close()
+
+
+	def shexec(self, cmd):
 		if type(cmd) is list: cmd = ' '.join(cmd)
-		logprint(cmd)
+		self.logprint(cmd)
 		try:
 			res = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
 		except:
 			res = 'ERROR: Shell command error, running ' + cmd
-		logprint(res)
+		self.logprint(res)
 		return res
 
 
-	def parse_shellvars(file_name):
+	def parse_shellvars(self, file_name):
 		TIC = "'"
 		QUOTE = '"'
 		return_dict = dict()

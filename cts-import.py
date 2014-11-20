@@ -8,7 +8,7 @@ import sys, os, re, pprint, codecs, datetime, subprocess
 # from lxml import etree as ET
 # from phpserialize import serialize, unserialize
 
-import dml_utils as U
+from dml_utils import dml_utils
 
 class trml:
 	BLACK 	= '\033[30m'
@@ -37,35 +37,35 @@ for prefix, uri in namespaces.iteritems():
 # RUN
 
 def run():
-	logprint()	
-	logprint('------------------------------------------------------')
-	logprint('cts-import.py : running at ' + logtime)
-	logprint('------------------------------------------------------')
-	logprint()	
-	logprint('Let\'s join & import...')	
-	logprint()	
-	logprint(pprint.pformat(config))
-	logprint()	
+	U.logprint()	
+	U.logprint('------------------------------------------------------')
+	U.logprint('cts-import.py : running at ' + U.logtime)
+	U.logprint('------------------------------------------------------')
+	U.logprint()	
+	U.logprint('Let\'s join & import...')	
+	U.logprint()	
+	U.logprint(pprint.pformat(config))
+	U.logprint()	
 
 	if len(sys.argv) > 1: revision = sys.argv[1]
 		
 	# Pull latest version from central Git repo
 	scdir = os.getcwd()
 	os.chdir(config['GIT_ContentLocal'])
-	shexec('git pull')
+	U.shexec('git pull')
 
 	# parse_html_xml_and_join()
 
 	os.chdir(scdir)
-	logprint('Copying into import area @ ' + config['CTS_ImportTarget'])
-	shexec(' '.join(['cp -pr', config['GIT_ContentLocal']+'/*', config['CTS_ImportTarget']]))
+	U.logprint('Copying into import area @ ' + config['CTS_ImportTarget'])
+	U.shexec(' '.join(['cp -pr', config['GIT_ContentLocal']+'/*', config['CTS_ImportTarget']]))
 		
 	# res = trigger_import()
 	
-	logprint()	
-	logprint('STATUS: SUCCESS')
-	logprint('DONE')
-	logprint()
+	U.logprint()	
+	U.logprint('STATUS: SUCCESS')
+	U.logprint('DONE')
+	U.logprint()
 	
 
 # --------------------------------------------------------------------------------
@@ -73,18 +73,17 @@ def run():
 
 if __name__ == '__main__':
 
+	# Initialise utilities
+	U = dml_utils()
+	
 	# Parse config file
 	config = U.parse_shellvars('bizclub-instance.cfg')
 
 	# Create logfile as global
-	today 	= datetime.datetime.today()
-	logtime = today.strftime('%Y-%m-%d-%H-%M-%S')
-	logfile = config['CTS_ImportLogDir'] + 'cts-import-' + logtime + '.log'
-	lfp 	= codecs.open(logfile, 'w', 'utf-8')
-	dml_utils.lfp = lfp
+	U.create_logfile(config['CTS_ImportLogDir'] + 'cts-import-')
 	
 	# Run
 	run();
 	
 	# Close logfile
-	lfp.close()
+	U.close_logfile()

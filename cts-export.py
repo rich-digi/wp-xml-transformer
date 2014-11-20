@@ -37,22 +37,22 @@ for prefix, uri in namespaces.iteritems():
 # RUN
 
 def run():
-	logprint()	
-	logprint('------------------------------------------------------')
-	logprint('cts-export.py : running at ' + logtime)
-	logprint('------------------------------------------------------')
-	logprint()	
-	logprint('Let\'s split & commit...')	
-	logprint()	
-	logprint(pprint.pformat(config))
-	logprint()	
+	U.logprint()	
+	U.logprint('------------------------------------------------------')
+	U.logprint('cts-export.py : running at ' + U.logtime)
+	U.logprint('------------------------------------------------------')
+	U.logprint()	
+	U.logprint('Let\'s split & commit...')	
+	U.logprint()	
+	U.logprint(pprint.pformat(config))
+	U.logprint()	
 
 	if len(sys.argv) > 1:
 		commit_message = sys.argv[1]
 	else:
-		logprint('STATUS: FAILURE: Please supply a commit message')
-		logprint('DONE')
-		logprint()	
+		U.logprint('STATUS: FAILURE: Please supply a commit message')
+		U.logprint('DONE')
+		U.logprint()	
 		return
 		
 	wpxml = config['CTS_ExportTarget'] if len(sys.argv) < 3 else sys.argv[2]
@@ -60,22 +60,22 @@ def run():
 	# make_export_dirs()
 	# parse_xml_and_split(wpxml)
 	
-	logprint('Copying into local repo @')
-	# shexec('cp -pr output/* ' + config['CTS_ContentLocal'])
-	shexec(['cp -pr', wpxml, config['GIT_ContentLocal']])
+	U.logprint('Copying into local repo @ ' + config['GIT_ContentLocal'])
+	# U.shexec('cp -pr output/* ' + config['CTS_ContentLocal'])
+	U.shexec(['cp -pr', wpxml, config['GIT_ContentLocal']])
 
 	# Commit to Git, and push to the central repo
 	os.chdir(config['GIT_ContentLocal'])
-	shexec('git add -A')
-	res = shexec('git status')
+	U.shexec('git add -A')
+	res = U.shexec('git status')
 	if 'nothing to commit' not in res:
-		shexec('git commit -m "' + commit_message + '"')
-		shexec('git push')
+		U.shexec('git commit -m "' + commit_message + '"')
+		U.shexec('git push')
 		
-	logprint()	
-	logprint('STATUS: SUCCESS')
-	logprint('DONE')
-	logprint()
+	U.logprint()	
+	U.logprint('STATUS: SUCCESS')
+	U.logprint('DONE')
+	U.logprint()
 
 
 # --------------------------------------------------------------------------------
@@ -90,12 +90,10 @@ if __name__ == '__main__':
 	config = U.parse_shellvars('bizclub-instance.cfg')
 
 	# Create logfile as global
-	lfp = create_logfile(config['CTS_ExportLogDir'] + 'cts-export-')
-	print lfp
-	dml_utils.lfp = lfp
+	U.create_logfile(config['CTS_ExportLogDir'] + 'cts-export-')
 	
 	# Run
 	run();
 	
 	# Close logfile
-	lfp.close()
+	U.close_logfile()
