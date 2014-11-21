@@ -2,6 +2,7 @@
 LOCAL-REPO/
 log/
 output/
+env/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
