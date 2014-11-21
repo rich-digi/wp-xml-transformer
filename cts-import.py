@@ -73,6 +73,9 @@ def run():
 
 if __name__ == '__main__':
 
+	# Change the CWD to this file's directory, so relative paths work
+	os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 	# Initialise utilities
 	U = dml_utils()
 	
