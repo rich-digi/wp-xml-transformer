@@ -2,7 +2,7 @@
 # Split Wordpress XML (using LXML) and commit to content branch
 # ------------------------------------------------------------------------------------------------
 
-import sys, os, re, pprint, codecs, datetime, subprocess
+import sys, os, pprint
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 # from lxml import etree as ET

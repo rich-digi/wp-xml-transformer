@@ -2,7 +2,7 @@
 # Pull content from branch and rebuild Wordpress XML (using LXML)
 # ------------------------------------------------------------------------------------------------
 
-import sys, os, re, pprint, codecs, datetime, subprocess
+import sys, os, pprint
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
 
 # from lxml import etree as ET
