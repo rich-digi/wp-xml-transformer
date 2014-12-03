@@ -40,11 +40,14 @@ class dml_utils:
 	def shexec(self, cmd):
 		if type(cmd) is list: cmd = ' '.join(cmd)
 		self.logprint(cmd)
+		res = ''
+		
 		try:
 			res = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+			self.logprint(res)
 		except:
-			res = 'ERROR: Shell command error, running ' + cmd
-		self.logprint(res)
+			self.logprint('ERROR: Shell command error, running ' + cmd)
+			self.logprint(res)
 		return res
 
 

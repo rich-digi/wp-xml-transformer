@@ -47,6 +47,16 @@ def run():
 	U.logprint(pprint.pformat(config))
 	U.logprint()	
 
+	if os.getenv('HOME') == None:
+		# Export HOME environment variable, so Git knows where to look for config files
+		# when it's not running from bash
+		U.logprint('Setting HOME environment variable to /home/www')	
+		U.logprint()	
+		os.environ['HOME'] = '/home/www'
+	
+	U.shexec('printenv')
+	U.shexec('git config -l')
+
 	if len(sys.argv) > 1:
 		commit_message = sys.argv[1]
 	else:
