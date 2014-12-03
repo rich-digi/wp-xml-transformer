@@ -1,6 +1,9 @@
 # ------------------------------------------------------------------------------------------------
 # Pull content from branch and rebuild Wordpress XML (using LXML)
 # ------------------------------------------------------------------------------------------------
+#
+# Usage: python cts-import.py [optional revision - not yet implemented]
+#
 
 import sys, os, re, pprint, codecs, datetime, subprocess
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')

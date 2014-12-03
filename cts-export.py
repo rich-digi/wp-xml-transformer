@@ -1,6 +1,9 @@
 # ------------------------------------------------------------------------------------------------
 # Split Wordpress XML (using LXML) and commit to content branch
 # ------------------------------------------------------------------------------------------------
+#
+# Usage: python cts-export.py "Commit Message" [optional CTS_ExportTarget override]
+#
 
 import sys, os, re, pprint, codecs, datetime, subprocess
 # sys.path.append('/usr/local/lib/python2.7/site-packages/')
