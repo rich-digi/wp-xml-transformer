@@ -102,7 +102,6 @@ with conn:
 # Parse the XML using ElementTree's streaming SAX-like parser, looking for 'items'
 for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
 	
-	title 	= elem.find('title').text
 	post_id = elem.find('wp:post_id', 		namespaces=namespaces).text
 	type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
 	name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
