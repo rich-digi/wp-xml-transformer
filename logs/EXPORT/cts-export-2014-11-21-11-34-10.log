@@ -1,0 +1,37 @@
+
+------------------------------------------------------
+cts-export.py : running at 2014-11-21-11-34-10
+------------------------------------------------------
+
+Let's split & commit...
+
+{'CTS_ExportLogDir': 'logs/EXPORT/',
+ 'CTS_ExportTarget': 'EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml',
+ 'CTS_ImportLogDir': 'logs/IMPORT/',
+ 'CTS_ImportTarget': 'IMPORT/',
+ 'DB_NewName': 'bizclub_prev_db',
+ 'DB_NewPass': 'njernjklfew98jivreknfr3ilj',
+ 'DB_NewUser': 'bizclub_prev_nahkduehiw',
+ 'GIT_ContentBranch': 'testbranch',
+ 'GIT_ContentLocal': '../bizclub-content',
+ 'GIT_ContentRemote': 'https://github.com/digitalmail/bizclub-content.git',
+ 'GIT_Pass': 'garbbokulant',
+ 'GIT_User': 'bcauto',
+ 'INS_Domain': 'www.prev.bizclub.net',
+ 'INS_Webroot': '/home/sites/www.prev.bizclub.net/www'}
+
+Copying into local repo @ ../bizclub-content
+cp -pr EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml ../bizclub-content
+ERROR: Shell command error, running cp -pr EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml ../bizclub-content
+git add -A
+
+git status
+On branch testbranch
+Your branch is up-to-date with 'origin/testbranch'.
+
+nothing to commit, working directory clean
+
+
+STATUS: SUCCESS
+DONE
+

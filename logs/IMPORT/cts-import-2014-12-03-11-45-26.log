@@ -1,0 +1,43 @@
+
+------------------------------------------------------
+cts-import.py : running at 2014-12-03-11-45-26
+------------------------------------------------------
+
+Let's join & import...
+
+{'CTS_ExportLogDir': 'logs/EXPORT/',
+ 'CTS_ExportTarget': 'EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml',
+ 'CTS_ImportLogDir': 'logs/IMPORT/',
+ 'CTS_ImportTarget': 'IMPORT/',
+ 'DB_NewName': 'bizclub_prev_db',
+ 'DB_NewPass': 'njernjklfew98jivreknfr3ilj',
+ 'DB_NewUser': 'bizclub_prev_nahkduehiw',
+ 'GIT_ContentBranch': 'testbranch',
+ 'GIT_ContentLocal': '../bizclub-content',
+ 'GIT_ContentRemote': 'https://github.com/digitalmail/bizclub-content.git',
+ 'GIT_Pass': 'garbbokulant100',
+ 'GIT_User': 'dml-automatic',
+ 'INS_Domain': 'www.prev.bizclub.net',
+ 'INS_Webroot': '/home/sites/www.prev.bizclub.net/www'}
+
+git pull
+From https://github.com/digitalmail/bizclub-content
+   4bba3cb..2598019  testbranch -> origin/testbranch
+ * [new branch]      develop    -> origin/develop
+   a9b9ca8..f8081ea  master     -> origin/master
+ * [new branch]      test-content -> origin/test-content
+Removing dmclubcustomerblog.wordpress.2014-10-29.xml
+Merge made by the 'recursive' strategy.
+ dmclubcustomerblog.wordpress.2014-10-29.xml | 2179 ---------------------------
+ test.xml                                    |   23 +
+ 2 files changed, 23 insertions(+), 2179 deletions(-)
+ delete mode 100644 dmclubcustomerblog.wordpress.2014-10-29.xml
+ create mode 100644 test.xml
+
+Copying into import area @ IMPORT/
+cp -pr ../bizclub-content/* IMPORT/
+
+
+STATUS: SUCCESS
+DONE
+

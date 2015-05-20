@@ -1,0 +1,88 @@
+
+------------------------------------------------------
+cts-export.py : running at 2014-12-03-11-31-26
+------------------------------------------------------
+
+Let's split & commit...
+
+{'CTS_ExportLogDir': 'logs/EXPORT/',
+ 'CTS_ExportTarget': 'EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml',
+ 'CTS_ImportLogDir': 'logs/IMPORT/',
+ 'CTS_ImportTarget': 'IMPORT/',
+ 'DB_NewName': 'bizclub_prev_db',
+ 'DB_NewPass': 'njernjklfew98jivreknfr3ilj',
+ 'DB_NewUser': 'bizclub_prev_nahkduehiw',
+ 'GIT_ContentBranch': 'testbranch',
+ 'GIT_ContentLocal': '../bizclub-content',
+ 'GIT_ContentRemote': 'https://github.com/digitalmail/bizclub-content.git',
+ 'GIT_Pass': 'garbbokulant100',
+ 'GIT_User': 'dml-automatic',
+ 'INS_Domain': 'www.prev.bizclub.net',
+ 'INS_Webroot': '/home/sites/www.prev.bizclub.net/www'}
+
+printenv
+TERM_PROGRAM=Apple_Terminal
+rvm_bin_path=/usr/local/rvm/bin
+GEM_HOME=/usr/local/rvm/gems/ruby-2.0.0-p353
+TERM=xterm-256color
+SHELL=/bin/bash
+TMPDIR=/var/folders/27/tq0bj95x4hjffyrxrjpkh0140000gn/T/
+IRBRC=/usr/local/rvm/rubies/ruby-2.0.0-p353/.irbrc
+Apple_PubSub_Socket_Render=/tmp/launch-pTFuKb/Render
+TERM_PROGRAM_VERSION=326
+TERM_SESSION_ID=BA4A7904-E5E2-49D9-84DE-1A5D40471F28
+MY_RUBY_HOME=/usr/local/rvm/rubies/ruby-2.0.0-p353
+USER=richardknight
+SVN_EDITOR=bbedit
+_system_type=Darwin
+rvm_path=/usr/local/rvm
+SSH_AUTH_SOCK=/tmp/launch-B1Ntx6/Listeners
+__CF_USER_TEXT_ENCODING=0x1F5:0:0
+rvm_prefix=/usr/local
+__CHECKFIX1436934=1
+PATH=/opt/subversion/bin:/Users/richardknight/.node/bin/:/Applications/MAMP/bin/php/php5.5.10/bin:/Users/richardknight/.composer/vendor/bin:/usr/local/rvm/gems/ruby-2.0.0-p353/bin:/usr/local/rvm/gems/ruby-2.0.0-p353@global/bin:/usr/local/rvm/rubies/ruby-2.0.0-p353/bin:/Applications/MAMP/bin/php5.3/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/local/rvm/bin
+VERSIONER_PYTHON_VERSION=2.7
+_=/usr/bin/printenv
+PWD=/Users/richardknight/Documents/WORKAREA/DML/_GIT/wp-xml-transformer
+JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home
+LANG=en_GB.UTF-8
+_system_arch=x86_64
+_system_version=10.9
+rvm_version=1.25.21 (stable)
+HOME=/Users/richardknight
+SHLVL=2
+LOGNAME=richardknight
+VERSIONER_PYTHON_PREFER_32_BIT=no
+GEM_PATH=/usr/local/rvm/gems/ruby-2.0.0-p353:/usr/local/rvm/gems/ruby-2.0.0-p353@global
+JRUBY_OPTS=
+_system_name=OSX
+RBXOPT=
+
+git config -l
+user.name=Richard Knight
+user.email=rich@apewave.com
+core.editor=bbedit
+diff.tool=araxis
+merge.tool=araxis
+filter.media.clean=git media clean %f
+filter.media.smudge=git media smudge %f
+filter.media.required=true
+push.default=simple
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+core.ignorecase=true
+core.precomposeunicode=true
+remote.origin.url=https://github.com/rich-digi/wp-xml-transformer.git
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.master.remote=origin
+branch.master.merge=refs/heads/master
+branch.nextver.remote=origin
+branch.nextver.merge=refs/heads/nextver
+branch.splitver.remote=origin
+branch.splitver.merge=refs/heads/splitver
+
+Copying into local repo @ ../bizclub-content
+cp -pr EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml ../bizclub-content
+ERROR: Shell command error, running cp -pr EXPORT/dmclubcustomerblog.wordpress.2014-10-29.xml ../bizclub-content

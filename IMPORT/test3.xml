@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<data
+	xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:wp="http://wordpress.org/export/1.2/"
+>
+	<wp:country name="Liechtenstein">
+		<rank>1</rank>
+		<dc:year>2008</dc:year>
+		<gdppc>141100</gdppc>
+		<neighbor name="Austria" direction="E"/>
+		<neighbor name="Switzerland" direction="W"/>
+	</wp:country>
+	<wp:country name="Singapore">
+		<rank>4</rank>
+		<dc:year>2011</dc:year>
+		<gdppc>59900</gdppc>
+		<neighbor name="Malaysia" direction="N"/>
+	</wp:country>
+	<wp:country name="Panama">
+		<rank><![CDATA[sandular]]></rank>
+		<dc:year><![CDATA[<h4>We are delighted to announce the launch of <strong>dmAnswers14 – </strong>a flexible, professional call answering service that is affordable for any size of business.</h4>
+
+	<h4><a href="http://custblog.dmclub.net/wp-content/uploads/2014/07/an14_hero@2x.png"><img class="alignnone size-full wp-image-24" src="http://custblog.dmclub.net/wp-content/uploads/2014/07/an14_hero@2x.png" alt="Get your calls professionally answ2ers, all the time" width="1160" height="500" /></a></h4>
+
+	<p>In business, any call received could be a potential customer.</p>]]></dc:year>
+		<gdppc>13600</gdppc>
+		<neighbor name="Costa Rica" direction="W"/>
+		<neighbor name="Colombia" direction="E"/>
+	</wp:country>
+</data>
+
