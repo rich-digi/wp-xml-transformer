@@ -67,24 +67,23 @@ _illegal_unichrs = [(0x00, 0x08), (0x0B, 0x0C), (0x0E, 0x1F),
                         (0x7F, 0x84), (0x86, 0x9F), 
                         (0xFDD0, 0xFDDF), (0xFFFE, 0xFFFF)] 
 if sys.maxunicode >= 0x10000:  # not narrow build 
-        _illegal_unichrs.extend([(0x1FFFE, 0x1FFFF), (0x2FFFE, 0x2FFFF), 
-                                 (0x3FFFE, 0x3FFFF), (0x4FFFE, 0x4FFFF), 
-                                 (0x5FFFE, 0x5FFFF), (0x6FFFE, 0x6FFFF), 
-                                 (0x7FFFE, 0x7FFFF), (0x8FFFE, 0x8FFFF), 
-                                 (0x9FFFE, 0x9FFFF), (0xAFFFE, 0xAFFFF), 
-                                 (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF), 
-                                 (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF), 
-                                 (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)]) 
+	_illegal_unichrs.extend([(0x1FFFE, 0x1FFFF), (0x2FFFE, 0x2FFFF), 
+							 (0x3FFFE, 0x3FFFF), (0x4FFFE, 0x4FFFF), 
+							 (0x5FFFE, 0x5FFFF), (0x6FFFE, 0x6FFFF), 
+							 (0x7FFFE, 0x7FFFF), (0x8FFFE, 0x8FFFF), 
+							 (0x9FFFE, 0x9FFFF), (0xAFFFE, 0xAFFFF), 
+							 (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF), 
+							 (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF), 
+							 (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)]) 
 
-_illegal_ranges = ["%s-%s" % (unichr(low), unichr(high)) 
-                   for (low, high) in _illegal_unichrs] 
+_illegal_ranges = ["%s-%s" % (unichr(low), unichr(high)) for (low, high) in _illegal_unichrs] 
 _illegal_xml_chars_RE = re.compile(u'[%s]' % u''.join(_illegal_ranges)) 
 
-
+# Filter out any invalid characters so that the document contains only the XML-legal subset of utf-8
 o = codecs.open('temp.xml', 'w', 'utf-8')
 f = codecs.open(xmldata, 'r', 'utf-8')
 for line in f:
-	line = re.sub(r'and', 'WHY', line)
+	line = _illegal_xml_chars_RE.sub('***', line)
 	o.write(line);
 o.close();
 
@@ -154,60 +153,89 @@ context = ET.iterparse('temp.xml', tag=top_level_tags, events=('start', 'end'), 
 depth = 0
 for event, elem in context:
 
+	# ------------------------------------------------------------------------------------------------
+	# ------------------------------------------------------------------------------------------------
+	# Loop efficiency optimisations (as we're only interested in the root's immediate child nodes)
+	#
 	if event == 'start':
-		print '________ST_' + elem.tag
 		depth += 1
+		if depth > 1: continue
+			
+	if event == 'end' and depth > 1:
+		depth -= 1
+		continue 
+	#
+	# END Loop efficiency optimisations (as we're only interested in the root's immediate child nodes)
+	# ------------------------------------------------------------------------------------------------
+	# ------------------------------------------------------------------------------------------------
+			
+	# if event == 'start':
+	# 	print str(depth) + ('----' * depth) + 'ST_' + elem.tag
+
+	#
+	# ONLY PROCESS XML NOdE ON 'end' EVENT, TO ENSURE THAT IT IS ALL THERE
+	# Otherwise children can occasionally go missing
+	#
+	
+	if event == 'end':
+		# print str(depth) + ('----' * depth) + 'EN_' + elem.tag
 
 		if depth == 1:
 		
 			print 'Handling ' + elem.tag
 
+			# Posts are <item>s in the WXR file
 			if elem.tag == 'item':
+				print '        ',
 				name = elem.find('wp:post_name', namespaces=namespaces)
 				if name is not None:
 					print name.text
 				else:
 					title = elem.find('title', namespaces=namespaces)
-					if title is not None: print title.text
+					if title is not None:
+						print title.text
+					else:
+						print 'NONE'
+						
+				# Do we have an attachment?		
+				type = elem.find('wp:post_type', namespaces=namespaces)
+				if type is not None and type.text == 'attachment':
 
-			type = elem.find('wp:post_type', namespaces=namespaces)
-			if type is not None and type.text == 'attachment':
+					# Make a directory to store the attachment
+					dir = '/output-nonsplit/resources'
 
-				# Make a directory to store the attachment
-				dir = '/output-nonsplit/resources'
+					# Copy attachment
+					attachment = elem.find('wp:attachment_url', namespaces=namespaces);
+					if attachment is not None:
+					
+						ori_att_url = attachment.text
+						print ori_att_url
+						new_att_url = re.sub(r'http://[\w+/.-]+/', '', ori_att_url)
 
-				# Copy attachment
-				attachment = elem.find('wp:attachment_url', namespaces=namespaces);
-				print attachment
-				if attachment is not None:
-					ori_att_url = attachment.text
-					print ori_att_url
-					new_att_url = re.sub(r'http://[\w+/.-]+/', '', ori_att_url)
-
-					ori_att_path = ori_att_url.replace(main_domain, site_path)
-					new_att_path = dir + '/' + new_att_url
-					try:
-						shutil.copy(ori_att_path, os.getcwd() + new_att_path)
-					except:
-						print 'ERROR: Could not copy ' + ori_att_path
+						ori_att_path = ori_att_url.replace(main_domain, site_path)
+						new_att_path = dir + '/' + new_att_url
+						try:
+							shutil.copy(ori_att_path, os.getcwd() + new_att_path)
+						except:
+							print 'ERROR: Could not copy ' + ori_att_path
+		
+						# Rewrite guid and wp:attachment_url (and link?)
+						attachment.text = new_att_url
+						elem.find('guid').text = new_att_url
 			
-					# Rewrite guid and wp:attachment_url (and link?)
-					attachment.text = new_att_url
-					elem.find('guid').text = new_att_url
-				
-				else:
-					print 'ATTACHMENT NONE?'
-				
+					else:
+						print 'ERROR: Could not determine attachment URI'
+
 			xmlstr = ET.tostring(elem, pretty_print=True, encoding='unicode', method='xml')
 			xmlstr = re.sub(r'\s?xmlns:\w+="[^"]*"', '', xmlstr) # Strip namespaces		
 			f.write(xmlstr)
-								
-	if event == 'end':
-		print '________EN_' + elem.tag
+
 		depth -= 1
-
-	elem.clear()
-
+		
+		if depth == 0:
+			print 'RUNNING GARBAGE COLLECTION'
+			print
+			elem.clear()
 
 f.write('</channel>\n')
 f.write('</'+root.tag+'>')
