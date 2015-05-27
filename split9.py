@@ -46,10 +46,16 @@ make_dir('/output/categories')
 make_dir('/output/terms')
 
 
-print
-print '----------------------------------------------------'
-print 'split9.py'
-print '----------------------------------------------------'
+print """
+----------------------------------------------------
+
+split9.py
+
+SPLIT WORDPRESS XML INTO ENTITIES,
+AND STORE ASSOCIATED RESOURCES
+
+----------------------------------------------------
+"""
 print
 print 'Gathering blog info...'
 print
@@ -88,24 +94,82 @@ print '{:17s} {:83s}'.format('GENERATOR', generator)
 main_domain = link
 
 
-print
-print 'Parsing posts to compile PostID data...'
-print '---------------------------------------'
-print
-
 conn = sqlite3.connect('post_ids.db')
 with conn:
     cur = conn.cursor()    
+    cur.execute('DROP TABLE IF EXISTS AuthorIDs')
+    cur.execute('DROP TABLE IF EXISTS CategoryIDs')
+    cur.execute('DROP TABLE IF EXISTS TermIDs')
     cur.execute('DROP TABLE IF EXISTS PostIDs')
-    cur.execute('CREATE TABLE PostIDs(id INT, type TEXT, name TEXT)')
+    cur.execute('CREATE TABLE AuthorIDs(id INT, login TEXT)')
+    cur.execute('CREATE TABLE CategoryIDs(id INT, parent INT, nicename TEXT)')
+    cur.execute('CREATE TABLE TermIDs(id INT, something TEXT)')
+    cur.execute('CREATE TABLE PostIDs(id INT, parent INT, type TEXT, name TEXT)')
 
+
+# Get authors, categories and terms
+
+print
+print 'Parsing and splitting authors...'
+print '--------------------------------'
+authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
+for author in authors:
+	author_id 		= author.find('wp:author_id', 		namespaces=namespaces).text 
+	author_login 	= author.find('wp:author_login', 	namespaces=namespaces).text 
+	print 'Inserting DB record and writing XML for ' + author_login
+	cur.execute('INSERT INTO AuthorIDs VALUES(?, ?)', (int(author_id), author_login))
+	xmlstr = ET.tostring(author, pretty_print=True, encoding='unicode', method='xml')
+	write_utf8_file('/output/authors/'+author_login+'.xml', xmlstr)
+conn.commit()
+
+
+print
+print 'Parsing categories to compile TermID data...'
+print '--------------------------------------------'
+cats = tree.xpath('//channel/wp:category', namespaces=namespaces)
+for cat in cats:
+	term_id	 = cat.find('wp:term_id', 			namespaces=namespaces).text 
+	cat_par	 = cat.find('wp:category_parent', 	namespaces=namespaces).text # What does this look like, when a category has a parent?
+	nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
+	print 'Inserting DB record for ' + nicename
+	cur.execute('INSERT INTO CategoryIDs VALUES(?, ?, ?)', (int(term_id), int(cat_par or 0), nicename))
+
+print
+print 'Splitting categories...'
+print '-----------------------'
+for cat in cats:
+	nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
+	print 'Writing XML for ' + nicename
+	xmlstr = ET.tostring(cat, pretty_print=True, encoding='unicode', method='xml')
+	write_utf8_file('/output/categories/'+nicename+'.xml', xmlstr)
+conn.commit()
+
+
+print
+print 'Parsing and splitting terms...'
+print '------------------------------'
+terms = tree.xpath('//channel/wp:term', namespaces=namespaces)
+for term in terms:
+	term_id		  = term.find('wp:term_id', 		namespaces=namespaces).text 
+	term_taxonomy = term.find('wp:term_taxonomy', 	namespaces=namespaces).text 
+	print 'Inserting DB record and writing XML for ' + term_taxonomy
+	cur.execute('INSERT INTO TermIDs VALUES(?, ?)', (int(term_id), term_taxonomy))
+	xmlstr = ET.tostring(term, pretty_print=True, encoding='unicode', method='xml')
+	write_utf8_file('/output/terms/'+term_taxonomy+'.xml', xmlstr)
+
+
+print
+print 'Parsing posts to compile PostID data...'
+print '---------------------------------------'
 # Parse the XML using ElementTree's streaming SAX-like parser, looking for 'items'
 for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
 	
-	post_id = elem.find('wp:post_id', 		namespaces=namespaces).text
-	type  	= elem.find('wp:post_type', 	namespaces=namespaces).text
-	name  	= elem.find('wp:post_name', 	namespaces=namespaces).text
-	cur.execute('INSERT INTO PostIDs VALUES(?, ?, ?)', (int(post_id), type, name))
+	post_id 	= elem.find('wp:post_id', 		namespaces=namespaces).text
+	post_par 	= elem.find('wp:post_parent', 	namespaces=namespaces).text
+	type  		= elem.find('wp:post_type', 	namespaces=namespaces).text
+	name  		= elem.find('wp:post_name', 	namespaces=namespaces).text
+	print 'Inserting DB record for ' + type + ':' + str(name or '')
+	cur.execute('INSERT INTO PostIDs VALUES(?, ?, ?, ?)', (int(post_id), int(post_par), type, name))
 
 conn.commit()
 
@@ -113,8 +177,6 @@ conn.commit()
 print
 print 'Splitting posts...'
 print '------------------'
-print
-
 # Parse the XML using ElementTree's streaming SAX-like parser, looking for 'items'
 for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_blank_text=True):
 
@@ -161,42 +223,7 @@ for event, elem in ET.iterparse(xmldata, tag='item', strip_cdata=False, remove_b
 		if excerpt.text:
 			write_utf8_file(dir+'/excerpt.html', excerpt.text)
 
-
-
-# Get authors, categories and terms
-
 print
-print 'Splitting authors...'
-print '--------------------'
+print 'DONE'
 print
 
-authors = tree.xpath('//channel/wp:author', namespaces=namespaces)
-for author in authors:
-	author_login = author.find('wp:author_login', namespaces=namespaces).text 
-	print author_login
-	xmlstr = ET.tostring(author, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/authors/'+author_login+'.xml', xmlstr)
-
-print
-print 'Splitting categories...'
-print '-----------------------'
-print
-
-cats = tree.xpath('//channel/wp:category', namespaces=namespaces)
-for cat in cats:
-	nicename = cat.find('wp:category_nicename', namespaces=namespaces).text 
-	print nicename
-	xmlstr = ET.tostring(cat, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/categories/'+nicename+'.xml', xmlstr)
-
-print
-print 'Splitting terms...'
-print '------------------'
-print
-
-terms = tree.xpath('//channel/wp:term', namespaces=namespaces)
-for term in terms:
-	term_taxonomy = term.find('wp:term_taxonomy', namespaces=namespaces).text 
-	print term_taxonomy
-	xmlstr = ET.tostring(term, pretty_print=True, encoding='unicode', method='xml')
-	write_utf8_file('/output/terms/'+term_taxonomy+'.xml', xmlstr)
